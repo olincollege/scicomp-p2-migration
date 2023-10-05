@@ -1,5 +1,4 @@
 # scicomp-p2-migration
-
 Scientific Computing Project 2: Volatile Migration and Loss of Water and Carbon Dioxide on Mercury
 
 This project is intended to detail the proporiton of molecules lost to process such as photoionization, photodissociation, and thermal escape. Due to Mercury being close to the sun, many molecules do not reach stability. This project is intended to investigate the main causes of loss and the significance of each process.
