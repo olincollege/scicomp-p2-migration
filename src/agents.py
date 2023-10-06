@@ -1,6 +1,8 @@
 """
 Defines a volatile agent utilized in the model
 """
+import numpy as np
+import helpers as helper
 
 
 class Volatile:
@@ -10,8 +12,16 @@ class Volatile:
     along the surface of Mercury
     """
 
-    def __init__(self) -> None:
-        self.temperature = 0
-        self.theta = 0
-        self.phi = 0
-        self.emergent_angle = 0
+    def __init__(self):
+        self.theta = np.random.uniform(0, 2 * np.pi)
+        self.phi = np.random.uniform(0, np.pi)
+        self.temperature = helper.molecule_temperature(self.phi)
+        self.emergent_angle = helper.emergent_angle()
+
+
+x = Volatile()
+print(x)
+print(x.theta)
+print(x.phi)
+print(x.temperature)
+print(x.emergent_angle)

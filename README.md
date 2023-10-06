@@ -17,4 +17,4 @@ All of the libraries are included in the `requirements.txt` file and can be inst
 pip install -r requirements.txt
 ```
 
-The repository has a set of 3 Python script files and a Jupyter Notebook for running the simulation.
+The repository and project is currently being updated. Check the branch `migration` to see the most recent changes.

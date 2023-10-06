@@ -66,3 +66,72 @@ def emergent_angle():
     """
 
     return np.random.uniform(0, np.pi / 2)
+
+
+def adjusted_gravity(height):
+    """
+    Calculates the adjusted gravity constant in a simulation
+    where gravity varies
+
+    Args:
+        height: (float) The maximum height in meters attained
+        in the simulation a volatile would move at under regular
+        gravity
+
+    Returns:
+        The approximated gravitational constant under variable
+        gravity
+    """
+
+    # Note: This is only an approximation for the change in gravity
+    # the resulting differential equation is nonhomogenous and difficult
+    # to solve. If I have enough time and would like to make the model
+    # more accurate, I'll implement Runge-Kutta for a more accurate
+    # trajectory mapping
+
+    return GRAV_MERCURY * (RAD_MERCURY / (RAD_MERCURY + height)) ** 2
+
+
+def max_height(velocity, incidence, gravity=GRAV_MERCURY):
+    """
+    Calculates the maximum height achieved by a volatile
+
+    Args:
+        velocity: (float) The intial velocity of a volatile when
+        leaping in m/s
+        incidence: (float) The angle at which the volatile will hop
+        at in radians
+        gravity: (float) The approximation of gravity causing a parabolic
+        trajectory in m/s (Set to the acceleration on ground level
+        on Mercury by default)
+
+    Returns:
+        The maximum height achieved in meters achieved by a volatile
+    """
+
+    velocity_y_squared = (velocity * np.sin(incidence)) ** 2
+    return (RAD_MERCURY * velocity_y_squared) / (
+        2 * RAD_MERCURY * gravity - velocity_y_squared
+    )
+
+
+def calc_distance(velocity, incidence, gravity=GRAV_MERCURY):
+    """
+    Calculates the displacement of a volatile
+
+    Args:
+        velocity: (float) The intial velocity of a volatile when
+        leaping in m/s
+        incidence: (float) The angle at which the volatile will hop
+        at in radians
+        gravity: (float) The approximation of gravity causing a parabolic
+        trajectory in m/s (Set to the acceleration on ground level
+        on Mercury by default)
+
+    Returns:
+        The maximum height achieved in meters achieved by a volatile
+    """
+    velocity_x = velocity * np.cos(incidence)
+    velocity_y = velocity * np.sin(incidence)
+    time = 2 * velocity_y / gravity
+    return velocity_x * time
