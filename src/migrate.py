@@ -37,3 +37,16 @@ def jeans_escape(velocity, emergent_angle):
     if vert_velocity <= kine.ESC_MERCURY:
         return True
     return False
+
+
+def photodestruction(volatile, time):
+    """
+    Null docstring
+
+    Args:
+        null
+
+    Returns:
+        null
+    """
+    pass
