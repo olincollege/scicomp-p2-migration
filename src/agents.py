@@ -17,8 +17,8 @@ class Volatile:
         self.phi = np.random.uniform(0, np.pi)
         self.temperature = helper.molecule_temperature(self.phi)
         self.emergent_angle = helper.emergent_angle()
-        self.velocity = 0
         self.heading = 0
+        self.velocity = 0
 
     def calc_heading(self, arc, heading):
         """
