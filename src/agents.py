@@ -17,11 +17,17 @@ class Volatile:
         self.phi = np.random.uniform(0, np.pi)
         self.temperature = helper.molecule_temperature(self.phi)
         self.emergent_angle = helper.emergent_angle()
+        self.velocity = 0
+        self.heading = 0
 
+    def calc_heading(self, arc, heading):
+        """
+        Calculate the new position of a volatile
 
-x = Volatile()
-print(x)
-print(x.theta)
-print(x.phi)
-print(x.temperature)
-print(x.emergent_angle)
+        Args:
+            arc: (float) The length of the arc mapped on a sphere a particle
+            travels at
+            heading: The angle at which a volatile heads
+        """
+        self.phi = (self.phi + arc * np.sin(heading)) % np.pi
+        self.theta = (self.theta + arc * np.cos(heading)) % 2 * np.pi
