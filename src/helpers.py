@@ -115,6 +115,35 @@ def adjusted_gravity(height):
     return GRAV_MERCURY * (RAD_MERCURY / (RAD_MERCURY + height)) ** 2
 
 
+def flight_time(velocity, incidence, h_max, gravity=GRAV_MERCURY):
+    """
+    Null Docstring
+
+    Args:
+        null
+
+    Returns:
+        null
+    """
+    vel_y = float(velocity * np.sin(incidence))
+    a = RAD_MERCURY * vel_y**2
+    b = vel_y**2 - 2 * gravity * RAD_MERCURY
+    u_0 = a
+    u_f = a + b * h_max
+    v_0 = RAD_MERCURY
+    v_f = RAD_MERCURY + h_max
+    l = a - b * RAD_MERCURY
+    p_0 = (a + b * RAD_MERCURY) / l
+    p_f = (2 * b * h_max + a + b * RAD_MERCURY) / l
+
+    def eval_integral(p, u, v):
+        return float((np.sqrt(u * v) / b)) + (l / (2 * b)) * float(
+            (1 / np.sqrt(-b))
+        ) * float(np.arcsin(p))
+
+    return 2 * (eval_integral(p_f, u_f, v_f) - eval_integral(p_0, u_0, v_0))
+
+
 def max_height(velocity, incidence, gravity=GRAV_MERCURY):
     """
     Calculates the maximum height achieved by a volatile
