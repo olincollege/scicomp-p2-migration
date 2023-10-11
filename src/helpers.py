@@ -54,6 +54,7 @@ def molecule_temperature(phi):
         The temperature of a given particle
     """
 
+    # For now, do not use the 10 degree bit separation
     mole_temp = SURFACE_TEMPERATURE + TERMINATOR_MERCURY * float(
         np.cos(phi - (np.pi / 2)) ** N
     )
@@ -62,8 +63,8 @@ def molecule_temperature(phi):
 
 def launch_velocity(temperature, volatile):
     """
-    Calculates the velocity of a particle on temperature
-    dependence
+    Calculates the averace launch velocity of a
+    particle on temperature dependence
 
     Args:
         temperature: (float) The temperature of a given molecule
@@ -117,13 +118,22 @@ def adjusted_gravity(height):
 
 def flight_time(velocity, incidence, h_max, gravity=GRAV_MERCURY):
     """
-    Null Docstring
+    Calculate the time of flight for a volatile of a given maximum
+    height
 
     Args:
-        null
+        velocity: (float) The intial velocity of a volatile when
+        leaping in m/s
+        incidence: (float) The angle at which the volatile will hop
+        at in radians
+        h_max: (float) The maximum height in meters that the volatile
+        reaches in its trajectory
+        gravity: (float) The approximation of gravity causing a parabolic
+        trajectory in m/s (Set to the acceleration on ground level
+        on Mercury by default)
 
     Returns:
-        null
+        The amount of time the volatile spends in the air
     """
     vel_y = float(velocity * np.sin(incidence))
     a = RAD_MERCURY * vel_y**2
@@ -137,6 +147,10 @@ def flight_time(velocity, incidence, h_max, gravity=GRAV_MERCURY):
     p_f = (2 * b * h_max + a + b * RAD_MERCURY) / l
 
     def eval_integral(p, u, v):
+        """
+        Place in the limits of integrations of the flight
+        time integral detailed in the paper
+        """
         return float((np.sqrt(u * v) / b)) + (l / (2 * b)) * float(
             (1 / np.sqrt(-b))
         ) * float(np.arcsin(p))
