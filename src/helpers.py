@@ -18,6 +18,29 @@ COLD_TRAP = 225  # 225 K
 NEWTON_CONSTANT = 6.67 * 10 ** (-11)  # 6.67 * 10^-11 m^3 / kg s^2
 
 
+def pdf_velocity(temperature, mass):
+    """
+    Calculates the trajectory velocity of a given volatile
+
+    Args:
+        temperature: (float) The given temperature of a specific
+        area within the simulation space
+        mass: (float) The specific particle mass in kilograms
+        of a specific volatile
+
+    Returns:
+        The initial launch velocity of the particle
+    """
+    # The following pdf has been rederived to map the given pdf function
+    # by calculating the expectation values to find velociy uncertainty
+    # the calculation is explained in further depth in the Jupyter notebook
+
+    calc_velocity = (3 * BOLTZMANN_CONSTANT * temperature / mass) ** 0.5
+    volatile_speed = np.random.normal(calc_velocity, calc_velocity)
+    # Handles the potential case of the velocity being less than zero
+    return max(volatile_speed, 0)
+
+
 def molecule_temperature(phi):
     """
     Calculates the temperature of a select volatile in the
@@ -135,3 +158,18 @@ def calc_distance(velocity, incidence, gravity=GRAV_MERCURY):
     velocity_y = velocity * np.sin(incidence)
     time = 2 * velocity_y / gravity
     return velocity_x * time
+
+
+def calc_radians(displacement):
+    """
+    Calculates the distance traveled by the molecule in radians
+
+    Args:
+        displacement: (float) The kinematic distance in meters traveled
+        by the volatile
+
+    Returns:
+        The amount of distance traveled by the particle as a radian
+        equivalent on the position of the sphere.
+    """
+    return displacement / RAD_MERCURY
