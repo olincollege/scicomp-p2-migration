@@ -4,19 +4,22 @@ Migration derivations for volatile migrations
 import numpy as np
 import src.helpers as kine
 
-PHOTO_WATER = 1.0 * 10**4
-PHOTO_CARBON_DIOXIDE = 3.3 * 10**4
+# Photodestruction Constants
+PHOTO_WATER = 1.0 * 10**4  # 10^4 Seconds
+PHOTO_CARBON_DIOXIDE = 3.3 * 10**4  # 3.3 * 10^4 Seconds
 
 
 def cold_trap(temperature):
     """
-    Null docstring
+    Determine whether or not the volatile steps into the territory of a
+    cold trap
 
     Args:
-        null
+        temperature: (float) The temperature of a volatile in Kelvin
 
     Returns:
-        null
+        A Boolean statement for when the volatile should be taken out of the
+        simulation space by cold trap
     """
     if temperature <= kine.COLD_TRAP:
         return True
@@ -25,28 +28,48 @@ def cold_trap(temperature):
 
 def jeans_escape(velocity, emergent_angle):
     """
-    Null docstring
+    Determine whether or not the volatile escapes the atmosphere due
+    to Jeans' escape
 
     Args:
-        null
+        velocity: (float) The magnitude of the initial trajectory
+        velocity in meters per second
+        emergent_angle: (float) The launch angle in radians off of the
+        ground when the volatile jumps
 
     Returns:
-        null
+        A Boolean statement for when the volatile should be taken out of the
+        simulation space by exceeding the escape velocity
     """
     vert_velocity = float(velocity * np.sin(emergent_angle))
-    if vert_velocity <= kine.ESC_MERCURY:
+    if vert_velocity >= kine.ESC_MERCURY:
         return True
     return False
 
 
-def photodestruction(volatile, time):
+def photodestruction(time, volatile="water"):
     """
-    Null docstring
+    Determine whether or not the volatile cannot continue in the
+    simulation due to photodestruction
 
     Args:
-        null
+        time: (float) The amount of time in seconds a volatile
+        will remain in the air for a jump
+        volatile: (string) The specified volatile used in the simulation
+        (Set to water by default)
 
     Returns:
-        null
+        A Boolean statement for when the volatile should be taken out of the
+        simulation space by photodestruction
     """
-    pass
+    if volatile == "water":
+        timescale = PHOTO_WATER
+    elif volatile == "carbon_dioxide":
+        timescale = PHOTO_CARBON_DIOXIDE
+    else:
+        timescale = PHOTO_WATER
+    probability_factor = float(1 - np.exp(-time / timescale))
+    probability = float(np.random.uniform())
+    if probability < probability_factor:
+        return True
+    return False
