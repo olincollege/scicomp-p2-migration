@@ -5,8 +5,8 @@ import numpy as np
 import src.helpers as kine
 
 # Photodestruction Constants
-PHOTO_WATER = 1.0 * 10**4  # 10^4 Seconds
-PHOTO_CARBON_DIOXIDE = 3.3 * 10**4  # 3.3 * 10^4 Seconds
+PHOTO_WATER = 1.0e4  # 10^4 Seconds
+PHOTO_CARBON_DIOXIDE = 3.3e4  # 3.3 * 10^4 Seconds
 
 
 def cold_trap(temperature):

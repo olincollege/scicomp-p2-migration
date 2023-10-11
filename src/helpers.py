@@ -5,17 +5,17 @@ Initial and Nonvariable Condition setting and PDF allocation
 import numpy as np
 
 # Note: All units have been converted into SI Units
-BOLTZMANN_CONSTANT = 1.38 * 10 ** (-23)  # 1.38 * 10^-23 J/K
-RAD_MERCURY = 2.439 * 10**6  # 2,439 km
-GRAV_MERCURY = 3.705  # 3.705 m/s^2
-ESC_MERCURY = 4.251 * 10**3  # 4.251 km/s
-SURFACE_TEMPERATURE = 1.381 * 10**2  # 138.1 K
-TERMINATOR_MERCURY = 3.785 * 10**2  # 378.5 K
-N = 3.7 * 10 ** (-1)  # Run Parameter
-WATER_MASS = 2.989 * 10 ** (-26)  # 18.02 amu
-CARBON_DIOXIDE_MASS = 7.308 * 10 ** (-26)  # 44.01 amu
-COLD_TRAP = 225  # 225 K
-NEWTON_CONSTANT = 6.67 * 10 ** (-11)  # 6.67 * 10^-11 m^3 / kg s^2
+BOLTZMANN_CONSTANT = 1.38e-23  # 1.38 * 10^-23 J/K
+RAD_MERCURY = 2.439e6  # 2,439 km
+GRAV_MERCURY = 3.705e0  # 3.705 m/s^2
+ESC_MERCURY = 4.251e3  # 4.251 km/s
+SURFACE_TEMPERATURE = 1.381e2  # 138.1 K
+TERMINATOR_MERCURY = 3.785e2  # 378.5 K
+N = 3.7e-1  # Run Parameter
+WATER_MASS = 2.989e-26  # 18.02 amu
+CARBON_DIOXIDE_MASS = 7.308e-26  # 44.01 amu
+COLD_TRAP = 2.25e2  # 225 K
+NEWTON_CONSTANT = 6.67e-11  # 6.67 * 10^-11 m^3 / kg s^2
 
 
 def pdf_velocity(temperature, mass):
