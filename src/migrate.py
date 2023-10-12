@@ -25,9 +25,13 @@ def volatile_loss(temperature, velocity, emergent_angle, time, volatile="water")
         (Set to water by default)
 
     Returns:
-        A Boolean statement for the method of loss a volatile goes through
+        A list of booleans for whether or not a volatile is lost
     """
-    pass
+    return [
+        cold_trap(temperature),
+        jeans_escape(velocity, emergent_angle),
+        photodestruction(time, volatile),
+    ]
 
 
 def cold_trap(temperature):

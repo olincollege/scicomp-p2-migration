@@ -3,6 +3,7 @@ Defines a volatile agent utilized in the model
 """
 import numpy as np
 import helpers as helper
+from src.migrate import volatile_loss
 
 
 class Volatile:
@@ -17,12 +18,29 @@ class Volatile:
         self.phi = np.random.uniform(0, np.pi)
         self.temperature = helper.molecule_temperature(self.phi)
         self.emergent_angle = helper.emergent_angle()
-        self.cold_capture = False
-        self.photo = False
-        self.jeans = False
+        self.velocity = 0
+        self.time = 0
+        self.loss = [False, False, False]
 
-    def migrate(self):
-        pass
+    def migrate(self, mass):
+        """
+        Allow 1 volatile to undergo a hop in the simulation
+        """
+        if self.loss[0] is True:
+            pass
+        elif self.loss[1] is True:
+            pass
+        elif self.loss[2] is True:
+            pass
+        else:
+            self.temperature = helper.molecule_temperature(self.phi)
+            self.velocity = helper.pdf_velocity(self.temperature, mass)
+            self.emergent_angle = helper.emergent_angle()
+            height = helper.max_height(self.velocity, self.emergent_angle)
+            self.time = helper.flight_time(self.velocity, self.emergent_angle, height)
+            self.loss = volatile_loss(
+                self.temperature, self.velocity, self.emergent_angle, self.time
+            )
 
     def heading_direction(self):
         """
