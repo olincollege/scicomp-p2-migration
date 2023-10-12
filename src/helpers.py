@@ -18,30 +18,7 @@ COLD_TRAP = 2.25e2  # 225 K
 NEWTON_CONSTANT = 6.67e-11  # 6.67 * 10^-11 m^3 / kg s^2
 
 
-def pdf_velocity(temperature, mass):
-    """
-    Calculates the trajectory velocity of a given volatile
-
-    Args:
-        temperature: (float) The given temperature of a specific
-        area within the simulation space
-        mass: (float) The specific particle mass in kilograms
-        of a specific volatile
-
-    Returns:
-        The initial launch velocity of the particle
-    """
-    # The following pdf has been rederived to map the given pdf function
-    # by calculating the expectation values to find velociy uncertainty
-    # the calculation is explained in further depth in the Jupyter notebook
-
-    calc_velocity = (3 * BOLTZMANN_CONSTANT * temperature / mass) ** 0.5
-    volatile_speed = np.random.normal(calc_velocity, calc_velocity)
-    # Handles the potential case of the velocity being less than zero
-    return max(volatile_speed, 0)
-
-
-def molecule_temperature(phi):
+def molecule_temperature(phi: float):
     """
     Calculates the temperature of a select volatile in the
     simulation space
@@ -61,7 +38,7 @@ def molecule_temperature(phi):
     return mole_temp
 
 
-def launch_velocity(temperature, volatile):
+def launch_velocity(temperature: float, volatile: int):
     """
     Calculates the averace launch velocity of a
     particle on temperature dependence
@@ -92,7 +69,7 @@ def emergent_angle():
     return np.random.uniform(0, np.pi / 2)
 
 
-def adjusted_gravity(height):
+def adjusted_gravity(height: float):
     """
     Calculates the adjusted gravity constant in a simulation
     where gravity varies
@@ -116,49 +93,7 @@ def adjusted_gravity(height):
     return GRAV_MERCURY * (RAD_MERCURY / (RAD_MERCURY + height)) ** 2
 
 
-def flight_time(velocity, incidence, h_max, gravity=GRAV_MERCURY):
-    """
-    Calculate the time of flight for a volatile of a given maximum
-    height
-
-    Args:
-        velocity: (float) The intial velocity of a volatile when
-        leaping in m/s
-        incidence: (float) The angle at which the volatile will hop
-        at in radians
-        h_max: (float) The maximum height in meters that the volatile
-        reaches in its trajectory
-        gravity: (float) The approximation of gravity causing a parabolic
-        trajectory in m/s (Set to the acceleration on ground level
-        on Mercury by default)
-
-    Returns:
-        The amount of time the volatile spends in the air
-    """
-    vel_y = float(velocity * np.sin(incidence))
-    a = RAD_MERCURY * vel_y**2
-    b = vel_y**2 - 2 * gravity * RAD_MERCURY
-    u_0 = a
-    u_f = a + b * h_max
-    v_0 = RAD_MERCURY
-    v_f = RAD_MERCURY + h_max
-    l = a - b * RAD_MERCURY
-    p_0 = (a + b * RAD_MERCURY) / l
-    p_f = (2 * b * h_max + a + b * RAD_MERCURY) / l
-
-    def eval_integral(p, u, v):
-        """
-        Place in the limits of integrations of the flight
-        time integral detailed in the paper
-        """
-        return float((np.sqrt(u * v) / b)) + (l / (2 * b)) * float(
-            (1 / np.sqrt(-b))
-        ) * float(np.arcsin(p))
-
-    return 2 * (eval_integral(p_f, u_f, v_f) - eval_integral(p_0, u_0, v_0))
-
-
-def max_height(velocity, incidence, gravity=GRAV_MERCURY):
+def max_height(velocity: float, incidence: float, gravity: float = GRAV_MERCURY):
     """
     Calculates the maximum height achieved by a volatile
 
@@ -181,7 +116,7 @@ def max_height(velocity, incidence, gravity=GRAV_MERCURY):
     )
 
 
-def calc_distance(velocity, incidence, gravity=GRAV_MERCURY):
+def calc_distance(velocity: float, incidence: float, gravity: float = GRAV_MERCURY):
     """
     Calculates the displacement of a volatile
 
@@ -203,7 +138,7 @@ def calc_distance(velocity, incidence, gravity=GRAV_MERCURY):
     return velocity_x * time
 
 
-def calc_radians(displacement):
+def calc_radians(displacement: float):
     """
     Calculates the distance traveled by the molecule in radians
 

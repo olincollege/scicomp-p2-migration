@@ -9,7 +9,13 @@ PHOTO_WATER = 1.0e4  # 10^4 Seconds
 PHOTO_CARBON_DIOXIDE = 3.3e4  # 3.3 * 10^4 Seconds
 
 
-def volatile_loss(temperature, velocity, emergent_angle, time, volatile="water"):
+def volatile_loss(
+    temperature: float,
+    velocity: float,
+    emergent_angle: float,
+    time: float,
+    volatile: str = "water",
+):
     """
     Find out if a volatile has been lost
 
