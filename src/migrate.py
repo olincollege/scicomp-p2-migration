@@ -10,11 +10,11 @@ PHOTO_CARBON_DIOXIDE = 3.3e4  # 3.3 * 10^4 Seconds
 
 
 def volatile_loss(
-    temperature: float,
-    velocity: float,
-    emergent_angle: float,
-    time: float,
-    volatile: str = "water",
+    temperature,
+    velocity,
+    emergent_angle,
+    time,
+    volatile="water",
 ):
     """
     Find out if a volatile has been lost
@@ -33,11 +33,11 @@ def volatile_loss(
     Returns:
         A list of booleans for whether or not a volatile is lost
     """
-    return [
+    return (
         jeans_escape(velocity, emergent_angle),
         cold_trap(temperature),
         photodestruction(time, volatile),
-    ]
+    )
 
 
 def cold_trap(temperature):
@@ -52,9 +52,7 @@ def cold_trap(temperature):
         A Boolean statement for when the volatile should be taken out of the
         simulation space by cold trap
     """
-    if temperature <= kine.COLD_TRAP:
-        return True
-    return False
+    return temperature <= kine.COLD_TRAP
 
 
 def jeans_escape(velocity, emergent_angle):
@@ -72,10 +70,8 @@ def jeans_escape(velocity, emergent_angle):
         A Boolean statement for when the volatile should be taken out of the
         simulation space by exceeding the escape velocity
     """
-    vert_velocity = float(velocity * np.sin(emergent_angle))
-    if vert_velocity >= kine.ESC_MERCURY:
-        return True
-    return False
+    vert_velocity = velocity * np.sin(emergent_angle)
+    return vert_velocity >= kine.ESC_MERCURY
 
 
 def photodestruction(time, volatile="water"):
@@ -99,8 +95,6 @@ def photodestruction(time, volatile="water"):
         timescale = PHOTO_CARBON_DIOXIDE
     else:
         timescale = PHOTO_WATER
-    probability_factor = float(1 - np.exp(-time / timescale))
-    probability = float(np.random.uniform())
-    if probability < probability_factor:
-        return True
-    return False
+    probability_factor = 1 - np.exp(-1 * (time / timescale))
+    probability = np.random.uniform(0, 1)
+    return probability < probability_factor

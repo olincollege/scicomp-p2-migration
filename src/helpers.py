@@ -18,7 +18,7 @@ COLD_TRAP = 2.25e2  # 225 K
 NEWTON_CONSTANT = 6.67e-11  # 6.67 * 10^-11 m^3 / kg s^2
 
 
-def molecule_temperature(phi: float):
+def molecule_temperature(phi):
     """
     Calculates the temperature of a select volatile in the
     simulation space
@@ -32,13 +32,13 @@ def molecule_temperature(phi: float):
     """
 
     # For now, do not use the 10 degree bit separation
-    mole_temp = SURFACE_TEMPERATURE + TERMINATOR_MERCURY * float(
-        np.cos(phi - (np.pi / 2)) ** N
+    mole_temp = (
+        SURFACE_TEMPERATURE + TERMINATOR_MERCURY * np.cos(phi - (np.pi / 2)) ** N
     )
     return mole_temp
 
 
-def launch_velocity(temperature: float, volatile: int):
+def launch_velocity(temperature, volatile):
     """
     Calculates the averace launch velocity of a
     particle on temperature dependence
@@ -69,7 +69,7 @@ def emergent_angle():
     return np.random.uniform(0, np.pi / 2)
 
 
-def adjusted_gravity(height: float):
+def adjusted_gravity(height):
     """
     Calculates the adjusted gravity constant in a simulation
     where gravity varies
@@ -93,7 +93,7 @@ def adjusted_gravity(height: float):
     return GRAV_MERCURY * (RAD_MERCURY / (RAD_MERCURY + height)) ** 2
 
 
-def max_height(velocity: float, incidence: float, gravity: float = GRAV_MERCURY):
+def max_height(velocity, incidence, gravity=GRAV_MERCURY):
     """
     Calculates the maximum height achieved by a volatile
 
@@ -116,7 +116,7 @@ def max_height(velocity: float, incidence: float, gravity: float = GRAV_MERCURY)
     )
 
 
-def calc_distance(velocity: float, incidence: float, gravity: float = GRAV_MERCURY):
+def calc_distance(velocity, incidence, gravity=GRAV_MERCURY):
     """
     Calculates the displacement of a volatile
 
@@ -138,7 +138,7 @@ def calc_distance(velocity: float, incidence: float, gravity: float = GRAV_MERCU
     return velocity_x * time
 
 
-def calc_radians(displacement: float):
+def calc_radians(displacement):
     """
     Calculates the distance traveled by the molecule in radians
 
