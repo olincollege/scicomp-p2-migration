@@ -16,6 +16,10 @@ class Volatile:
     """
 
     def __init__(self):
+        """
+        Set up the initial volatile characteristics that define important
+        features of the volatile
+        """
         self.theta = np.random.uniform(0, 2 * np.pi)
         self.phi = np.random.uniform(0, np.pi)
         self.temperature = helper.molecule_temperature(self.phi)
@@ -32,12 +36,24 @@ class Volatile:
             mass: (float) The specific particle mass in kilograms
             of a specific volatile
         """
+
+        # First check to see if the volatile has migrated to a cold
+        # trap
         if self.loss[0] is True:
             pass
+
+        # Next check to see if the volatile has exceeded the vertical
+        # escape velocity of Mercury (Jeans escape)
         elif self.loss[1] is True:
             pass
+
+        # Finally, check to see if the volatile has encounter photodestruction
         elif self.loss[2] is True:
             pass
+
+        # If the volatile hasn't been lost, then calculate where the volatile
+        # will then end up as well as it's temperature and flight time
+        # to find out if the volatile becomes lost in the next iteration
         else:
             self.temperature = helper.molecule_temperature(self.phi)
             self.velocity = pdf_velocity(self.temperature, mass)
