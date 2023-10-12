@@ -21,7 +21,7 @@ class Volatile:
         self.photo = False
         self.jeans = False
 
-    def migrate():
+    def migrate(self):
         pass
 
     def heading_direction(self):
