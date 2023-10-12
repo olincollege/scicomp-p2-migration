@@ -5,20 +5,20 @@ Initial and Nonvariable Condition setting and PDF allocation
 import numpy as np
 
 # Note: All units have been converted into SI Units
-BOLTZMANN_CONSTANT = 1.38 * 10 ** (-23)  # 1.38 * 10^-23 J/K
-RAD_MERCURY = 2.439 * 10**6  # 2,439 km
-GRAV_MERCURY = 3.705  # 3.705 m/s^2
-ESC_MERCURY = 4.251 * 10**3  # 4.251 km/s
-SURFACE_TEMPERATURE = 1.381 * 10**2  # 138.1 K
-TERMINATOR_MERCURY = 3.785 * 10**2  # 378.5 K
-N = 3.7 * 10 ** (-1)  # Run Parameter
-WATER_MASS = 2.989 * 10 ** (-26)  # 18.02 amu
-CARBON_DIOXIDE_MASS = 7.308 * 10 ** (-26)  # 44.01 amu
-COLD_TRAP = 225  # 225 K
-NEWTON_CONSTANT = 6.67 * 10 ** (-11)  # 6.67 * 10^-11 m^3 / kg s^2
+BOLTZMANN_CONSTANT = 1.38e-23  # 1.38 * 10^-23 J/K
+RAD_MERCURY = 2.439e6  # 2,439 km
+GRAV_MERCURY = 3.705e0  # 3.705 m/s^2
+ESC_MERCURY = 4.251e3  # 4.251 km/s
+SURFACE_TEMPERATURE = 1.381e2  # 138.1 K
+TERMINATOR_MERCURY = 3.785e2  # 378.5 K
+N = 3.7e-1  # Run Parameter
+WATER_MASS = 2.989e-26  # 18.02 amu
+CARBON_DIOXIDE_MASS = 7.308e-26  # 44.01 amu
+COLD_TRAP = 2.25e2  # 225 K
+NEWTON_CONSTANT = 6.67e-11  # 6.67 * 10^-11 m^3 / kg s^2
 
 
-def molecule_temperature(phi):
+def molecule_temperature(phi: float):
     """
     Calculates the temperature of a select volatile in the
     simulation space
@@ -31,16 +31,17 @@ def molecule_temperature(phi):
         The temperature of a given particle
     """
 
+    # For now, do not use the 10 degree bit separation
     mole_temp = SURFACE_TEMPERATURE + TERMINATOR_MERCURY * float(
         np.cos(phi - (np.pi / 2)) ** N
     )
     return mole_temp
 
 
-def launch_velocity(temperature, volatile):
+def launch_velocity(temperature: float, volatile: int):
     """
-    Calculates the velocity of a particle on temperature
-    dependence
+    Calculates the averace launch velocity of a
+    particle on temperature dependence
 
     Args:
         temperature: (float) The temperature of a given molecule
@@ -68,7 +69,7 @@ def emergent_angle():
     return np.random.uniform(0, np.pi / 2)
 
 
-def adjusted_gravity(height):
+def adjusted_gravity(height: float):
     """
     Calculates the adjusted gravity constant in a simulation
     where gravity varies
@@ -92,7 +93,7 @@ def adjusted_gravity(height):
     return GRAV_MERCURY * (RAD_MERCURY / (RAD_MERCURY + height)) ** 2
 
 
-def max_height(velocity, incidence, gravity=GRAV_MERCURY):
+def max_height(velocity: float, incidence: float, gravity: float = GRAV_MERCURY):
     """
     Calculates the maximum height achieved by a volatile
 
@@ -115,7 +116,7 @@ def max_height(velocity, incidence, gravity=GRAV_MERCURY):
     )
 
 
-def calc_distance(velocity, incidence, gravity=GRAV_MERCURY):
+def calc_distance(velocity: float, incidence: float, gravity: float = GRAV_MERCURY):
     """
     Calculates the displacement of a volatile
 
@@ -135,3 +136,18 @@ def calc_distance(velocity, incidence, gravity=GRAV_MERCURY):
     velocity_y = velocity * np.sin(incidence)
     time = 2 * velocity_y / gravity
     return velocity_x * time
+
+
+def calc_radians(displacement: float):
+    """
+    Calculates the distance traveled by the molecule in radians
+
+    Args:
+        displacement: (float) The kinematic distance in meters traveled
+        by the volatile
+
+    Returns:
+        The amount of distance traveled by the particle as a radian
+        equivalent on the position of the sphere.
+    """
+    return displacement / RAD_MERCURY

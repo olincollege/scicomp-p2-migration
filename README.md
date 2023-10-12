@@ -17,4 +17,4 @@ All of the libraries are included in the `requirements.txt` file and can be inst
 pip install -r requirements.txt
 ```
 
-The repository and project is currently being updated. Check the branch `migration` to see the most recent changes.
+The repository and project is currently being updated. Check the branch `PDF` to see the most recent changes.
