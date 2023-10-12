@@ -9,6 +9,27 @@ PHOTO_WATER = 1.0e4  # 10^4 Seconds
 PHOTO_CARBON_DIOXIDE = 3.3e4  # 3.3 * 10^4 Seconds
 
 
+def volatile_loss(temperature, velocity, emergent_angle, time, volatile="water"):
+    """
+    Find out if a volatile has been lost
+
+    Args:
+        temperature: (float) The temperature of a volatile in Kelvin
+        velocity: (float) The magnitude of the initial trajectory
+        velocity in meters per second
+        emergent_angle: (float) The launch angle in radians off of the
+        ground when the volatile jumps
+        time: (float) The amount of time in seconds a volatile
+        will remain in the air for a jump
+        volatile: (string) The specified volatile used in the simulation
+        (Set to water by default)
+
+    Returns:
+        A Boolean statement for the method of loss a volatile goes through
+    """
+    pass
+
+
 def cold_trap(temperature):
     """
     Determine whether or not the volatile steps into the territory of a

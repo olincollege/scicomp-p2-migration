@@ -17,8 +17,18 @@ class Volatile:
         self.phi = np.random.uniform(0, np.pi)
         self.temperature = helper.molecule_temperature(self.phi)
         self.emergent_angle = helper.emergent_angle()
-        self.heading = 0
-        self.velocity = 0
+        self.cold_capture = False
+        self.photo = False
+        self.jeans = False
+
+    def migrate():
+        pass
+
+    def heading_direction(self):
+        """
+        Calculates the direction on the sphere the volatile goes in
+        """
+        return float(np.random.uniform(0, 2 * np.pi))
 
     def calc_heading(self, arc, heading):
         """
