@@ -2,10 +2,12 @@
 Defines a volatile agent utilized in the model
 """
 import numpy as np
-import helpers as helper
+import src.helpers as helper
 from src.migrate import volatile_loss
 
 RADIUS = helper.RAD_MERCURY
+
+np.random.seed(299)
 
 
 class Volatile:
@@ -37,13 +39,13 @@ class Volatile:
             of a specific volatile
         """
 
-        # First check to see if the volatile has migrated to a cold
-        # trap
+        # First check to see if the volatile has exceeded the vertical
+        # escape velocity of Mercury (Jeans escape)
         if self.loss[0] is True:
             pass
 
-        # Next check to see if the volatile has exceeded the vertical
-        # escape velocity of Mercury (Jeans escape)
+        # Next check to see if the volatile has migrated to a cold
+        # trap
         elif self.loss[1] is True:
             pass
 
@@ -154,8 +156,8 @@ def flight_time(
         Place in the limits of integrations of the flight
         time integral detailed in the paper
         """
-        return float((np.sqrt(u * v) / b)) + (l / (2 * b)) * float(
-            (1 / np.sqrt(-b))
+        return float((np.sqrt(abs(u * v / b)))) + (l / (2 * b)) * float(
+            (1 / np.sqrt(abs(-b)))
         ) * float(np.arcsin(p))
 
     return 2 * (eval_integral(p_f, u_f, v_f) - eval_integral(p_0, u_0, v_0))

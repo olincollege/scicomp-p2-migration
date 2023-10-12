@@ -34,8 +34,8 @@ def volatile_loss(
         A list of booleans for whether or not a volatile is lost
     """
     return [
-        cold_trap(temperature),
         jeans_escape(velocity, emergent_angle),
+        cold_trap(temperature),
         photodestruction(time, volatile),
     ]
 
