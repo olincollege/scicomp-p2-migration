@@ -96,5 +96,5 @@ def photodestruction(time, volatile="water"):
     else:
         timescale = PHOTO_WATER
     probability_factor = 1 - np.exp(-1 * (time / timescale))
-    probability = np.random.uniform(0, 1)
+    probability = np.random.rand(10000)
     return probability < probability_factor

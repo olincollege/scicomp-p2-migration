@@ -66,7 +66,7 @@ def emergent_angle():
         The angle (psi) that the volatile launches at
     """
 
-    return np.random.uniform(0, np.pi / 2)
+    return np.arccos(np.random.uniform())
 
 
 def adjusted_gravity(height):

@@ -6,8 +6,7 @@ import src.helpers as helper
 from src.migrate import volatile_loss
 
 RADIUS = helper.RAD_MERCURY
-N_MOLECULE = 100000
-np.random.seed(299)
+N_MOLECULE = 10000
 
 
 class Volatile:
@@ -22,12 +21,14 @@ class Volatile:
         Set up the initial volatile characteristics that define important
         features of the volatile
         """
-        self.theta = np.array(
-            [np.random.uniform(0, 2 * np.pi) for i in range(N_MOLECULE)], dtype=float
+        l_dist = (np.random.beta(2, 5, N_MOLECULE // 2) * (np.pi / 2) - (np.pi / 2)) % (
+            np.pi / 2
         )
-        self.phi = np.array(
-            [np.random.uniform(0, np.pi) for i in range(N_MOLECULE)], dtype=float
-        )
+        r_dist = (
+            np.random.beta(2, 5, N_MOLECULE // 2) * -(np.pi / 2) + (np.pi / 2)
+        ) % (np.pi / 2) + np.pi / 2
+        self.theta = np.random.rand(N_MOLECULE) * 2 * np.pi
+        self.phi = np.reshape(np.array([l_dist, r_dist]), [1, N_MOLECULE])
         self.temperature = helper.molecule_temperature(self.phi)
         self.emergent_angle = np.array(
             [helper.emergent_angle() for i in range(N_MOLECULE)]
@@ -69,8 +70,11 @@ class Volatile:
             self.velocity = pdf_velocity(self.temperature, mass)
             self.emergent_angle = helper.emergent_angle()
             height = helper.max_height(self.velocity, self.emergent_angle)
-            self.time = flight_time(self.velocity, self.emergent_angle, height)
-            distance = helper.calc_distance(self.velocity, self.emergent_angle)
+            adj_gravity = helper.adjusted_gravity(height)
+            self.time = flight_time(self.velocity, self.emergent_angle, adj_gravity)
+            distance = helper.calc_distance(
+                self.velocity, self.emergent_angle, adj_gravity
+            )
             radians = helper.calc_radians(distance)
             heading = heading_direction()
             self.calc_heading(radians, heading)
@@ -127,7 +131,6 @@ def pdf_velocity(temperature, mass):
 def flight_time(
     velocity,
     incidence,
-    h_max,
     gravity=helper.GRAV_MERCURY,
 ):
     """
@@ -149,23 +152,26 @@ def flight_time(
         The amount of time the volatile spends in the air
     """
     vel_y = velocity * np.sin(incidence)
-    a = RADIUS * vel_y**2
-    b = vel_y**2 - 2 * gravity * RADIUS
-    u_0 = a
-    u_f = a + b * h_max
-    v_0 = RADIUS
-    v_f = RADIUS + h_max
-    l = a - b * RADIUS
-    p_0 = (a + b * RADIUS) / l
-    p_f = (2 * b * h_max + a + b * RADIUS) / l
+    return vel_y / gravity
+    # There are some issues with the arcsin function that must be evaluated first
+    # Before moving on, just approximate the projectile time for now
+    # a = RADIUS * vel_y**2
+    # b = vel_y**2 - 2 * gravity * RADIUS
+    # u_0 = a
+    # u_f = a + b * h_max
+    # v_0 = RADIUS
+    # v_f = RADIUS + h_max
+    # l = a - b * RADIUS
+    # p_0 = (a + b * RADIUS) / l
+    # p_f = (2 * b * h_max + a + b * RADIUS) / l
 
-    def eval_integral(p, u, v):
-        """
-        Place in the limits of integrations of the flight
-        time integral detailed in the paper
-        """
-        return (np.sqrt(abs(u * v / b))) + (l / (2 * b)) * (
-            1 / np.sqrt(abs(-b))
-        ) * np.arcsin(p)
+    # def eval_integral(p, u, v):
+    #     """
+    #     Place in the limits of integrations of the flight
+    #     time integral detailed in the paper
+    #     """
+    #     return (np.sqrt(abs(u * v / b))) + (l / (2 * b)) * (
+    #         1 / np.sqrt(abs(-b))
+    #     ) * np.arcsin(p)
 
-    return 2 * (eval_integral(p_f, u_f, v_f) - eval_integral(p_0, u_0, v_0))
+    # return 2 * (eval_integral(p_f, u_f, v_f) - eval_integral(p_0, u_0, v_0))
