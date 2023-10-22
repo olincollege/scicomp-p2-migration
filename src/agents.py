@@ -6,7 +6,7 @@ import src.helpers as helper
 from src.migrate import volatile_loss
 
 RADIUS = helper.RAD_MERCURY
-N_MOLECULE = 1
+N_MOLECULE = 100000
 
 np.random.seed(299)
 
@@ -31,9 +31,12 @@ class Volatile:
         )
         self.velocity = np.zeros(N_MOLECULE, dtype=float)
         self.time = np.zeros(N_MOLECULE, dtype=float)
-        self.photo = np.array([[0] for i in range(N_MOLECULE)], dtype=list)
-        self.jeans = np.array([[0] for i in range(N_MOLECULE)], dtype=list)
-        self.cold = np.array([[0] for i in range(N_MOLECULE)], dtype=list)
+        self.photo_phi = np.zeros(1)
+        self.photo_theta = np.zeros(1)
+        self.jeans_phi = np.zeros(1)
+        self.jeans_theta = np.zeros(1)
+        self.cold_phi = np.zeros(1)
+        self.cold_theta = np.zeros(1)
 
     def migrate(self, mass: float):
         """
@@ -44,39 +47,42 @@ class Volatile:
             of a specific volatile
         """
 
-        # First check to see if the volatile has exceeded the vertical
-        # escape velocity of Mercury (Jeans escape)
-        if self.jeans is True:
-            pass
-
-        # Next check to see if the volatile has migrated to a cold
-        # trap
-        elif self.cold is True:
-            pass
-
-        # Finally, check to see if the volatile has encounter photodestruction
-        elif self.photo is True:
-            pass
-
         # If the volatile hasn't been lost, then calculate where the volatile
         # will then end up as well as it's temperature and flight time
         # to find out if the volatile becomes lost in the next iteration
-        else:
-            self.temperature = helper.molecule_temperature(self.phi)
-            self.velocity = pdf_velocity(self.temperature, mass)
-            self.emergent_angle = helper.emergent_angle()
-            height = helper.max_height(self.velocity, self.emergent_angle)
-            adj_gravity = helper.adjusted_gravity(height)
-            self.time = flight_time(self.velocity, self.emergent_angle, adj_gravity)
-            distance = helper.calc_distance(
-                self.velocity, self.emergent_angle, adj_gravity
-            )
-            radians = helper.calc_radians(distance)
-            heading = heading_direction()
-            self.calc_heading(radians, heading)
-            self.jeans, self.cold, self.photo = volatile_loss(
-                self.temperature, self.velocity, self.emergent_angle, self.time
-            )
+        self.temperature = helper.molecule_temperature(self.phi)
+        self.velocity = pdf_velocity(self.temperature, mass)
+        self.emergent_angle = helper.emergent_angle()
+        height = helper.max_height(self.velocity, self.emergent_angle)
+        adj_gravity = helper.adjusted_gravity(height)
+        self.time = flight_time(self.velocity, self.emergent_angle, adj_gravity)
+        distance = helper.calc_distance(self.velocity, self.emergent_angle, adj_gravity)
+        radians = helper.calc_radians(distance)
+        heading = heading_direction()
+        self.calc_heading(radians, heading)
+        (
+            self.phi,
+            self.theta,
+            self.jeans_phi,
+            self.jeans_theta,
+            self.cold_phi,
+            self.cold_theta,
+            self.photo_phi,
+            self.photo_theta,
+        ) = volatile_loss(
+            self.temperature,
+            self.velocity,
+            self.emergent_angle,
+            self.time,
+            self.phi,
+            self.theta,
+            self.jeans_phi,
+            self.jeans_theta,
+            self.cold_phi,
+            self.cold_theta,
+            self.photo_phi,
+            self.photo_theta,
+        )
 
     def calc_heading(self, arc, heading):
         """
