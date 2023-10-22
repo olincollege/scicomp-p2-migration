@@ -1,5 +1,6 @@
 matplotlib
-plotly
+pyqt5
 mayavi
 numpy
+scipy
 ipykernel

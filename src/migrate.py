@@ -3,6 +3,7 @@ Migration derivations for volatile migrations
 """
 import numpy as np
 import src.helpers as kine
+from scipy.sparse import find as spf
 
 # Photodestruction Constants
 PHOTO_WATER = 1.0e4  # 10^4 Seconds
@@ -52,6 +53,7 @@ def cold_trap(temperature):
         A Boolean statement for when the volatile should be taken out of the
         simulation space by cold trap
     """
+    sparse_indicies = spf(temperature <= kine.COLD_TRAP)
     return temperature <= kine.COLD_TRAP
 
 
@@ -96,5 +98,5 @@ def photodestruction(time, volatile="water"):
     else:
         timescale = PHOTO_WATER
     probability_factor = 1 - np.exp(-1 * (time / timescale))
-    probability = np.random.rand(10000)
+    probability = np.random.rand(1)
     return probability < probability_factor

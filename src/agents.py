@@ -6,7 +6,9 @@ import src.helpers as helper
 from src.migrate import volatile_loss
 
 RADIUS = helper.RAD_MERCURY
-N_MOLECULE = 10000
+N_MOLECULE = 1
+
+np.random.seed(299)
 
 
 class Volatile:
@@ -21,23 +23,17 @@ class Volatile:
         Set up the initial volatile characteristics that define important
         features of the volatile
         """
-        l_dist = (np.random.beta(2, 5, N_MOLECULE // 2) * (np.pi / 2) - (np.pi / 2)) % (
-            np.pi / 2
-        )
-        r_dist = (
-            np.random.beta(2, 5, N_MOLECULE // 2) * -(np.pi / 2) + (np.pi / 2)
-        ) % (np.pi / 2) + np.pi / 2
         self.theta = np.random.rand(N_MOLECULE) * 2 * np.pi
-        self.phi = np.reshape(np.array([l_dist, r_dist]), [1, N_MOLECULE])
+        self.phi = np.arccos(1 - 2 * np.random.rand(N_MOLECULE))
         self.temperature = helper.molecule_temperature(self.phi)
         self.emergent_angle = np.array(
             [helper.emergent_angle() for i in range(N_MOLECULE)]
         )
         self.velocity = np.zeros(N_MOLECULE, dtype=float)
         self.time = np.zeros(N_MOLECULE, dtype=float)
-        self.photo = np.array([[False] for i in range(N_MOLECULE)], dtype=list)
-        self.jeans = np.array([[False] for i in range(N_MOLECULE)], dtype=list)
-        self.cold = np.array([[False] for i in range(N_MOLECULE)], dtype=list)
+        self.photo = np.array([[0] for i in range(N_MOLECULE)], dtype=list)
+        self.jeans = np.array([[0] for i in range(N_MOLECULE)], dtype=list)
+        self.cold = np.array([[0] for i in range(N_MOLECULE)], dtype=list)
 
     def migrate(self, mass: float):
         """
@@ -100,7 +96,7 @@ def heading_direction():
     Calculates the direction on the sphere the volatile goes in
 
     Returns:
-        T The angle at which the volatile travels to as a unit vector
+        The angle at which the volatile travels to as a unit vector
     """
     return np.random.uniform(0, 2 * np.pi)
 
@@ -153,25 +149,3 @@ def flight_time(
     """
     vel_y = velocity * np.sin(incidence)
     return vel_y / gravity
-    # There are some issues with the arcsin function that must be evaluated first
-    # Before moving on, just approximate the projectile time for now
-    # a = RADIUS * vel_y**2
-    # b = vel_y**2 - 2 * gravity * RADIUS
-    # u_0 = a
-    # u_f = a + b * h_max
-    # v_0 = RADIUS
-    # v_f = RADIUS + h_max
-    # l = a - b * RADIUS
-    # p_0 = (a + b * RADIUS) / l
-    # p_f = (2 * b * h_max + a + b * RADIUS) / l
-
-    # def eval_integral(p, u, v):
-    #     """
-    #     Place in the limits of integrations of the flight
-    #     time integral detailed in the paper
-    #     """
-    #     return (np.sqrt(abs(u * v / b))) + (l / (2 * b)) * (
-    #         1 / np.sqrt(abs(-b))
-    #     ) * np.arcsin(p)
-
-    # return 2 * (eval_integral(p_f, u_f, v_f) - eval_integral(p_0, u_0, v_0))

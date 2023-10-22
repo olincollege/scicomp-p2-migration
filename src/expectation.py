@@ -2,6 +2,13 @@
 Calculate statistical parameters of every simulation run
 """
 import numpy as np
+from src.agents import Volatile
+
+
+def simulate(runs):
+    volatiles = Volatile()
+    for j in range(runs):
+        volatiles.migrate(2.989e-26)
 
 
 def calculate_statistics(volatile_list: list):
