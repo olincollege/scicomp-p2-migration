@@ -6,8 +6,6 @@ This project is intended to detail the proporiton of molecules lost to process s
 ## Dependencies and Repository Overview
 To run the software, you will need the following libaries:
 * matplotlib
-* plotly
-* mayavi
 * numpy
 * scipy
 * ipykernel
