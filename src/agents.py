@@ -2,10 +2,13 @@
 Defines a volatile agent utilized in the model
 """
 import numpy as np
-import helpers as helper
+import src.helpers as helper
 from src.migrate import volatile_loss
 
 RADIUS = helper.RAD_MERCURY
+N_MOLECULE = 100000
+
+np.random.seed(299)
 
 
 class Volatile:
@@ -20,13 +23,20 @@ class Volatile:
         Set up the initial volatile characteristics that define important
         features of the volatile
         """
-        self.theta = np.random.uniform(0, 2 * np.pi)
-        self.phi = np.random.uniform(0, np.pi)
+        self.theta = np.random.rand(N_MOLECULE) * 2 * np.pi
+        self.phi = np.arccos(1 - 2 * np.random.rand(N_MOLECULE))
         self.temperature = helper.molecule_temperature(self.phi)
-        self.emergent_angle = helper.emergent_angle()
-        self.velocity = 0
-        self.time = 0
-        self.loss = [False, False, False]
+        self.emergent_angle = np.array(
+            [helper.emergent_angle() for i in range(N_MOLECULE)]
+        )
+        self.velocity = np.zeros(N_MOLECULE, dtype=float)
+        self.time = np.zeros(N_MOLECULE, dtype=float)
+        self.photo_phi = np.empty(1)
+        self.photo_theta = np.empty(1)
+        self.jeans_phi = np.empty(1)
+        self.jeans_theta = np.empty(1)
+        self.cold_phi = np.empty(1)
+        self.cold_theta = np.empty(1)
 
     def migrate(self, mass: float):
         """
@@ -37,38 +47,44 @@ class Volatile:
             of a specific volatile
         """
 
-        # First check to see if the volatile has migrated to a cold
-        # trap
-        if self.loss[0] is True:
-            pass
-
-        # Next check to see if the volatile has exceeded the vertical
-        # escape velocity of Mercury (Jeans escape)
-        elif self.loss[1] is True:
-            pass
-
-        # Finally, check to see if the volatile has encounter photodestruction
-        elif self.loss[2] is True:
-            pass
-
         # If the volatile hasn't been lost, then calculate where the volatile
         # will then end up as well as it's temperature and flight time
         # to find out if the volatile becomes lost in the next iteration
-        else:
-            self.temperature = helper.molecule_temperature(self.phi)
-            self.velocity = pdf_velocity(self.temperature, mass)
-            self.emergent_angle = helper.emergent_angle()
-            height = helper.max_height(self.velocity, self.emergent_angle)
-            self.time = flight_time(self.velocity, self.emergent_angle, height)
-            distance = helper.calc_distance(self.velocity, self.emergent_angle)
-            radians = helper.calc_radians(distance)
-            heading = heading_direction()
-            self.calc_heading(radians, heading)
-            self.loss = volatile_loss(
-                self.temperature, self.velocity, self.emergent_angle, self.time
-            )
+        self.temperature = helper.molecule_temperature(self.phi)
+        self.velocity = pdf_velocity(self.temperature, mass)
+        self.emergent_angle = helper.emergent_angle()
+        height = helper.max_height(self.velocity, self.emergent_angle)
+        adj_gravity = helper.adjusted_gravity(height)
+        self.time = flight_time(self.velocity, self.emergent_angle, adj_gravity)
+        distance = helper.calc_distance(self.velocity, self.emergent_angle, adj_gravity)
+        radians = helper.calc_radians(distance)
+        heading = heading_direction()
+        self.calc_heading(radians, heading)
+        (
+            self.phi,
+            self.theta,
+            self.jeans_phi,
+            self.jeans_theta,
+            self.cold_phi,
+            self.cold_theta,
+            self.photo_phi,
+            self.photo_theta,
+        ) = volatile_loss(
+            self.temperature,
+            self.velocity,
+            self.emergent_angle,
+            self.time,
+            self.phi,
+            self.theta,
+            self.jeans_phi,
+            self.jeans_theta,
+            self.cold_phi,
+            self.cold_theta,
+            self.photo_phi,
+            self.photo_theta,
+        )
 
-    def calc_heading(self, arc: float, heading: float):
+    def calc_heading(self, arc, heading):
         """
         Calculate the new position of a volatile
 
@@ -86,12 +102,12 @@ def heading_direction():
     Calculates the direction on the sphere the volatile goes in
 
     Returns:
-        T The angle at which the volatile travels to as a unit vector
+        The angle at which the volatile travels to as a unit vector
     """
-    return float(np.random.uniform(0, 2 * np.pi))
+    return np.random.uniform(0, 2 * np.pi)
 
 
-def pdf_velocity(temperature: float, mass: float):
+def pdf_velocity(temperature, mass):
     """
     Calculates the trajectory velocity of a given volatile
 
@@ -111,14 +127,13 @@ def pdf_velocity(temperature: float, mass: float):
     calc_velocity = (3 * helper.BOLTZMANN_CONSTANT * temperature / mass) ** 0.5
     volatile_speed = np.random.normal(calc_velocity, calc_velocity)
     # Handles the potential case of the velocity being less than zero
-    return max(float(volatile_speed), 0)
+    return abs(volatile_speed)
 
 
 def flight_time(
-    velocity: float,
-    incidence: float,
-    h_max: float,
-    gravity: float = helper.GRAV_MERCURY,
+    velocity,
+    incidence,
+    gravity=helper.GRAV_MERCURY,
 ):
     """
     Calculate the time of flight for a volatile of a given maximum
@@ -138,24 +153,5 @@ def flight_time(
     Returns:
         The amount of time the volatile spends in the air
     """
-    vel_y = float(velocity * np.sin(incidence))
-    a = RADIUS * vel_y**2
-    b = vel_y**2 - 2 * gravity * RADIUS
-    u_0 = a
-    u_f = a + b * h_max
-    v_0 = RADIUS
-    v_f = RADIUS + h_max
-    l = a - b * RADIUS
-    p_0 = (a + b * RADIUS) / l
-    p_f = (2 * b * h_max + a + b * RADIUS) / l
-
-    def eval_integral(p, u, v):
-        """
-        Place in the limits of integrations of the flight
-        time integral detailed in the paper
-        """
-        return float((np.sqrt(u * v) / b)) + (l / (2 * b)) * float(
-            (1 / np.sqrt(-b))
-        ) * float(np.arcsin(p))
-
-    return 2 * (eval_integral(p_f, u_f, v_f) - eval_integral(p_0, u_0, v_0))
+    vel_y = velocity * np.sin(incidence)
+    return vel_y / gravity
