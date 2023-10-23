@@ -38,3 +38,16 @@ def stacked_bar_plot(jeans_data, cold_data, photo_data):
     plt.bar("Percentages", photo_data, color="green")
     plt.bar("Percentages", cold_data, bottom=photo_data, color="blue")
     return plt.bar("Percentages", jeans_data, bottom=cold_data, color="red")
+
+
+def pie_plot(jeans_data, cold_data, photo_data):
+    data = [jeans_data, cold_data, photo_data]
+    labels = ["Jeans Escape", "Cold Trap", "Photodestruction"]
+    explode = (0, 0.2, 0.1)
+    return plt.pie(
+        data,
+        explode=explode,
+        labels=labels,
+        autopct="%1.1f%%",
+        colors=["red", "blue", "green"],
+    )
