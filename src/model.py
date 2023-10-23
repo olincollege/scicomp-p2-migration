@@ -19,3 +19,13 @@ def compound_histogram(jeans_data, cold_data, photo_data, bins=10):
     plt.hist(cold_data, bins=bins, color="blue")
     plt.hist(photo_data, bins=bins, color="green")
     return plt.legend(["Jeans Escape", "Cold Trap", "Photodestruction"])
+
+
+def bar_plot(jeans_data, cold_data, photo_data):
+    jeans_data = np.array(jeans_data) / 1000
+    cold_data = np.array(cold_data) / 1000
+    photo_data = np.array(photo_data) / 1000
+    bars = [jeans_data, cold_data, photo_data]
+    bar_labels = ["Jeans Escape", "Cold Trap", "Photodestruction"]
+    bar_colors = ["tab:red", "tab:blue", "tab:green"]
+    return plt.bar(bar_labels, bars, color=bar_colors)
