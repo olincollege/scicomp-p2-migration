@@ -31,12 +31,12 @@ class Volatile:
         )
         self.velocity = np.zeros(N_MOLECULE, dtype=float)
         self.time = np.zeros(N_MOLECULE, dtype=float)
-        self.photo_phi = np.zeros(1)
-        self.photo_theta = np.zeros(1)
-        self.jeans_phi = np.zeros(1)
-        self.jeans_theta = np.zeros(1)
-        self.cold_phi = np.zeros(1)
-        self.cold_theta = np.zeros(1)
+        self.photo_phi = np.empty(1)
+        self.photo_theta = np.empty(1)
+        self.jeans_phi = np.empty(1)
+        self.jeans_theta = np.empty(1)
+        self.cold_phi = np.empty(1)
+        self.cold_theta = np.empty(1)
 
     def migrate(self, mass: float):
         """

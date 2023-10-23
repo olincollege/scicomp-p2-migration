@@ -26,7 +26,7 @@ def volatile_loss(
     volatile="water",
 ):
     """
-    Find out if a volatile has been lost
+    Determine how a volatile might've been lost or if it continues to migrate
 
     Args:
         temperature: (float) The temperature of a volatile in Kelvin
@@ -38,15 +38,32 @@ def volatile_loss(
         will remain in the air for a jump
         phi: (float) The set of free particle's lattitude angle
         theta: (float) The set of free particle's longitude angle
+        jeans_phi: (float) The set of lattitude measurements of
+        particles caught by Jeans escape
+        jeans_theta: (float) The set of longitude measurements of
+        particles caught by Jeans escape
+        cold_phi: (float) The set of lattitude measurements of
+        particles caught by cold trap
+        cold_theta: (float) The set of longitude measurements of
+        particles caught by cold trap
+        photo_phi: (float) The set of lattitude measurements of
+        particles caught by photodestruction
+        photo_theta: (float) The set of longitude measurements of
+        particles caught by photodestruction
         volatile: (string) The specified volatile used in the simulation
         (Set to water by default)
 
     Returns:
-        A list of booleans for whether or not a volatile is lost
+        All set of the particles position that are either lost or active in the simulation
     """
 
     # First check to see if the volatile has exceeded the vertical
     # escape velocity of Mercury (Jeans escape)
+
+    # Note: We must take the inputs for the other functions (temperature and time)
+    # to maintain consistency when changing the array size and making sure that each
+    # volatile is lost through only one method. Jeans escape only requires velocity and
+    # the emergent angle of the system.
 
     jeans_phi, jeans_theta, time, temperature, phi, theta = jeans_escape(
         velocity,
@@ -61,6 +78,11 @@ def volatile_loss(
 
     # Next check to see if the volatile has migrated to a cold
     # trap
+
+    # Note: We must take the inputs for the other functions (time)
+    # to maintain consistency when changing the array size and making sure that each
+    # volatile is lost through only one method. The only factor relevant to the cold trap
+    # is the temperature the molecule is at.
 
     cold_phi, cold_theta, time, phi, theta = cold_trap(
         temperature, time, phi, theta, cold_phi, cold_theta
@@ -89,10 +111,18 @@ def cold_trap(temperature, time, phi, theta, cold_phi, cold_theta):
 
     Args:
         temperature: (float) The temperature of a volatile in Kelvin
+        time: (float) The amount of time in seconds a volatile
+        will remain in the air for a jump
+        phi: (float) The set of free particle's lattitude angle
+        theta: (float) The set of free particle's longitude angle
+        cold_phi: (float) The set of lattitude measurements of
+        particles caught by cold trap
+        cold_theta: (float) The set of longitude measurements of
+        particles caught by cold trap
 
     Returns:
-        A Boolean statement for when the volatile should be taken out of the
-        simulation space by cold trap
+        The set of positions of particles that are lost due to cold traps
+        or maintained in the system
     """
     sparse_indicies = list(spf(temperature <= kine.COLD_TRAP))[1]
     cold_phi = np.concatenate((cold_phi, np.take(phi, sparse_indicies, axis=0)))
@@ -122,10 +152,19 @@ def jeans_escape(
         velocity in meters per second
         emergent_angle: (float) The launch angle in radians off of the
         ground when the volatile jumps
+        temperature: (float) The temperature of a volatile in Kelvin
+        time: (float) The amount of time in seconds a volatile
+        will remain in the air for a jump
+        phi: (float) The set of free particle's lattitude angle
+        theta: (float) The set of free particle's longitude angle
+        photo_phi: (float) The set of lattitude measurements of
+        particles caught by photodestruction
+        photo_theta: (float) The set of longitude measurements of
+        particles caught by photodestruction
 
     Returns:
-        A Boolean statement for when the volatile should be taken out of the
-        simulation space by exceeding the escape velocity
+        The set of positions of particles that are lost due to exceeding the
+        escape velocity or the set of particles that could not escape
     """
     vert_velocity = velocity * np.sin(emergent_angle)
     sparse_indicies = list(spf(vert_velocity >= kine.ESC_MERCURY))[1]
@@ -146,12 +185,18 @@ def photodestruction(time, phi, theta, photo_phi, photo_theta, volatile="water")
     Args:
         time: (float) The amount of time in seconds a volatile
         will remain in the air for a jump
+        phi: (float) The set of free particle's lattitude angle
+        theta: (float) The set of free particle's longitude angle
+        photo_phi: (float) The set of lattitude measurements of
+        particles caught by photodestruction
+        photo_theta: (float) The set of longitude measurements of
+        particles caught by photodestruction
         volatile: (string) The specified volatile used in the simulation
         (Set to water by default)
 
     Returns:
-        A Boolean statement for when the volatile should be taken out of the
-        simulation space by photodestruction
+        The set of positions of particles that are destroyed by light
+        or have stayed in the simulation
     """
     if volatile == "water":
         timescale = PHOTO_WATER
