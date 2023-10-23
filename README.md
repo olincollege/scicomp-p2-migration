@@ -6,8 +6,6 @@ This project is intended to detail the proporiton of molecules lost to process s
 ## Dependencies and Repository Overview
 To run the software, you will need the following libaries:
 * matplotlib
-* plotly
-* mayavi
 * numpy
 * scipy
 * ipykernel
@@ -39,7 +37,5 @@ The repository has a set of 5 Python script files located in the `src` folder an
 `migration.ipynb` is a Jupyter notebook containing a computational essay explaining the modeling abstractions and decisions as well as a way to run the model and a reflection on the results. All of the initial conditions listed in the paper have been placed in the notebook, and all relevant design decisions have been explained.
 
 To run the simulation, you may run through all the cells in `migration.ipynb` to get all of the proper figures
-
-The repository and project is currently being updated. Check the branch `statistics` to see the most recent changes.
 
 If you have any questions, please feel free to reach out to Kevin Lie-Atjam (klieatjam@olin.edu)
