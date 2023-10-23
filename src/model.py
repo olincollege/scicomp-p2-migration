@@ -7,12 +7,39 @@ from mpl_toolkits import mplot3d
 
 
 def plot_histogram(data_list, color, bins=10):
+    """
+    Plot a histogram distribution
+
+    Args:
+        data_list: (list) A list of data points for the number of volatiles lost in a
+        specific method
+        color: (str) A string for the color to use for the graphs
+        bins: (int) The number of bins to use for the distribution
+
+    Returns:
+        A histogram plot to use for the data
+    """
     data = np.array(data_list)
     data = data / 1000
     return plt.hist(data, bins=bins, color=color)
 
 
 def compound_histogram(jeans_data, cold_data, photo_data, bins=10):
+    """
+    Plot all histogram distributions for all volatile loss mechanisms
+
+    Args:
+        jeans_data: (list) A list integers for the number of volatiles lost by Jeans escape
+        in a simulation
+        cold_data: (list) A list integers for the number of volatiles lost by cold traps
+        in a simulation
+        photo_data: (list) A list integers for the number of volatiles lost by photodestruction
+        in a simulation
+        bins: (int) The number of bins to use for the distribution
+
+    Returns:
+        A plot containing three histograms of data used for the simulation
+    """
     jeans_data = np.array(jeans_data) / 1000
     cold_data = np.array(cold_data) / 1000
     photo_data = np.array(photo_data) / 1000
@@ -23,6 +50,21 @@ def compound_histogram(jeans_data, cold_data, photo_data, bins=10):
 
 
 def bar_plot(jeans_data, cold_data, photo_data):
+    """
+    Plot a set of bars for the average number of volatiles lost
+
+    Args:
+        jeans_data: (float) The average number of volatiles lost by Jeans escape
+        in a simulation
+        cold_data: (float) The average number of volatiles lost by cold traps
+        in a simulation
+        photo_data: (float) The average number of volatiles lost by photodestruction
+        in a simulation
+
+    Returns:
+        A plot containing three bars containing the percentage of molecules
+        lost by a specific mechanism
+    """
     jeans_data = np.array(jeans_data) / 1000
     cold_data = np.array(cold_data) / 1000
     photo_data = np.array(photo_data) / 1000
@@ -33,6 +75,21 @@ def bar_plot(jeans_data, cold_data, photo_data):
 
 
 def stacked_bar_plot(jeans_data, cold_data, photo_data):
+    """
+    Plot a stacked bar graph for the average number of volatiles lost
+
+    Args:
+        jeans_data: (float) The average number of volatiles lost by Jeans escape
+        in a simulation
+        cold_data: (float) The average number of volatiles lost by cold traps
+        in a simulation
+        photo_data: (float) The average number of volatiles lost by photodestruction
+        in a simulation
+
+    Returns:
+        A plot containing a stacked bar containing the percentage of molecules
+        lost by a specific mechanism
+    """
     jeans_data = np.array(jeans_data) / 1000
     cold_data = np.array(cold_data) / 1000
     photo_data = np.array(photo_data) / 1000
@@ -42,6 +99,21 @@ def stacked_bar_plot(jeans_data, cold_data, photo_data):
 
 
 def pie_plot(jeans_data, cold_data, photo_data):
+    """
+    Plot a pie chart for the loss mechanism data
+
+    Args:
+        jeans_data: (float) The average number of volatiles lost by Jeans escape
+        in a simulation
+        cold_data: (float) The average number of volatiles lost by cold traps
+        in a simulation
+        photo_data: (float) The average number of volatiles lost by photodestruction
+        in a simulation
+
+    Returns:
+        A plot containing a pie chart containing the percentage of molecules
+        lost by a specific mechanism
+    """
     data = [jeans_data, cold_data, photo_data]
     labels = ["Jeans Escape", "Cold Trap", "Photodestruction"]
     explode = (0, 0.2, 0.1)
@@ -55,6 +127,21 @@ def pie_plot(jeans_data, cold_data, photo_data):
 
 
 def point_cloud(jeans_phi, jeans_theta, cold_phi, cold_theta, photo_phi, photo_theta):
+    """
+    Plot a point cloud around the surface of Mercury
+
+    Args:
+        jeans_data: (float) The average number of volatiles lost by Jeans escape
+        in a simulation
+        cold_data: (float) The average number of volatiles lost by cold traps
+        in a simulation
+        photo_data: (float) The average number of volatiles lost by photodestruction
+        in a simulation
+
+    Returns:
+        A 3D plot containing a spherical plot of Mercury as well as colored points for where
+        a molecule was last located before being lost
+    """
     radius_mercury = 1
     radius_point_cloud = 1.3
     pi = np.pi
