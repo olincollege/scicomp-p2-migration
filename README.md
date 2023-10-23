@@ -38,6 +38,4 @@ The repository has a set of 5 Python script files located in the `src` folder an
 
 To run the simulation, you may run through all the cells in `migration.ipynb` to get all of the proper figures
 
-The repository and project is currently being updated. Check the branch `statistics` to see the most recent changes.
-
 If you have any questions, please feel free to reach out to Kevin Lie-Atjam (klieatjam@olin.edu)
